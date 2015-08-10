@@ -18,8 +18,11 @@ post '/tracks' do
     artist: params[:artist],
     url: params[:url]
     )
-  @track.save
-  redirect '/tracks'
+  if @track.save 
+    redirect '/tracks'
+  else
+    erb :'tracks/new'
+  end 
 end 
 
 get '/tracks/:id' do 
