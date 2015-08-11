@@ -1,3 +1,5 @@
+
+
 <h1><%= @track.title %></h1>
 
 <p> 
@@ -8,5 +10,28 @@
   URL: <%= @track.url %> 
 </p>
 
+<p>
+  Posted by: <%= @track.user.email %> 
+</p>
+
+
+
+<% if @tracks.where(artist: @track.artist).where.not(id: @track.id).any? %> 
+  <h3> Other tracks by <%= @track.artist %></h3>
+  
+
+  <% @tracks.where(artist: @track.artist).where("id != ?", @track.id).each do |track| %> 
+    <div> 
+      <p> <%= track.title %>: <a href= <%= track.url %> > Link </a> </p> 
+    </div>
+  <% end %> 
+
+<% end %> 
+
+
 <hr/> 
 <a href="/tracks"> Back to All Tracks </a>
+
+
+<!-- .where(artist: @track.artist) -->
+<!-- .where("id != ?", "@track.id" -->

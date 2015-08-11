@@ -1,14 +1,26 @@
+
+
 <h1> Tracks </h1>
 
-<% @tracks.each do |track| %> 
+<% @tracks.order(created_at: :desc).each do |track| %> 
   <div class="track"> 
-    <h3> <a href="/tracks/<%= track.id %>"> <%= track.title %> </a><small> <%= track.artist %> </small> </h3>
+    <h3> <a href="/tracks/<%= track.id %>"> <%= track.title %></a><small> <%= track.artist %> </small> </h3>
     <p> 
-      Link: <%= track.url %> <br/>
-      <a href="<% track.url %>"> Link</a> <br/> 
+      <a href= <%= track.url %> > Link </a> <br/> 
       Posted At: <%= track.created_at %> <br/>
       Updated At: <%= track.updated_at %>
     </p>
+
+    <% if session[:email] %>  
+      <!-- <form method="post" action="/show"> 
+        <div> 
+          <input type="submit" value="Upvote"> 
+          <input type="submit" value="Downvote">
+        </div>
+      </form> -->
+      <%= button_to '+1', upvote_topic_path(topic), method: :post %>
+    <% end %> 
+
   </div>
   
 <% end %> 

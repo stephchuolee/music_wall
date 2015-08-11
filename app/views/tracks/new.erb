@@ -1,3 +1,5 @@
+
+
 <h1> Add a new track </h1>
 
 <% if @track && @track.errors.any? %>
@@ -16,19 +18,21 @@
 
 <form method="post" action="/tracks"> 
   <div> 
-    <label> Artist </label>
-    <input type="text" name="artist" value="<%= @track && @track.artist %> "> 
+    <label> Artist </label> 
+     <input type="text" name="artist" placeholder="Name of Artist" class="form-control" value="<%= @track && @track.artist %>"> 
   </div>
 
   <div> 
     <label> Song Title </label>
-    <input type="text" name="title" value="<%= @track && @track.title %>"> 
+    <input type="text" name="title" placeholder="Song Title" class ="form-control" value="<%= @track && @track.title %>"> 
   </div>
 
   <div> 
     <label> URL </label>
-    <input type="text" name="url" value="<%= @track && @track.url %>"> 
+    <input type="url" name="url" placeholder="Song URL" class="form-control" value="<%= @track && @track.url %>"> 
   </div>
+
+  <br/>
 
   <div> 
     <input type="submit" value="Submit"> 

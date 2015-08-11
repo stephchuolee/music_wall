@@ -1,0 +1,18 @@
+body {
+  
+  margin-left: auto;
+  margin-right: auto;
+  width: 800px;
+
+}
+
+
+#nav ul { 
+  list-style-type: none;
+  margin: 10px;
+}
+
+#nav ul li {
+  margin: 10px;
+  display: inline;
+}

@@ -1,0 +1,22 @@
+
+
+<h1> Sign Up </h1>
+
+<form method="post" action="/signup"> 
+  
+  <div> 
+    <label> Email </label>
+    <input type="text" name="email" placeholder="Your Email" class="form-control" value="<%= @user && @user.email %>">
+  </div>
+
+  <div> 
+    <label> Password </label>
+    <input type="password" name="password" placehholder="Your Password" class="form-control" value="<%= @user && @user.password %>">
+    <br/>
+  </div>
+
+  <div> 
+    <input type="submit" value="Submit"> 
+  </div>
+
+</form>
