@@ -9,8 +9,23 @@ get '/' do
 end
 
 get '/tracks' do 
-  @tracks = Track.all 
+  @tracks = Track.includes(:votes).group("tracks.id").order("count(votes.id) desc").references(:votes)
   erb :'tracks/index'
+  # erb :'tracks/index'
+end 
+
+post '/upvote' do 
+  @vote = Vote.create(
+    track_id: params[:track_id],
+    user_id: session[:id]
+    )
+  unless @vote.valid? 
+    @tracks = Track.all # required to render tracks/index
+    erb :'tracks/index'
+  else 
+    redirect '/tracks'
+  end 
+
 end 
 
 get '/tracks/new' do
@@ -44,18 +59,15 @@ end
 post '/login' do 
   @user = User.find_by(email: params[:email])
 
-  if @user  
-    if @user.password == params[:password]
-      session[:email] = @user.email
-      session[:id] = @user.id 
-      # binding.pry
-      redirect '/'
+  if @user && @user.password == params[:password]
+    session[:email] = @user.email
+    session[:id] = @user.id 
+    redirect '/'
+  else
+    @messages = ['Invalid login credentials']
+    erb :'/login'
+  end
 
-    else 
-      # error message 
-      erb :'/login'
-    end 
-  end 
 end 
 
 get '/logout' do

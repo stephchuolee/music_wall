@@ -2,16 +2,29 @@
 
 <h1> Login </h1>
 
+  <% if @messages %>
+    <div> 
+    <strong> Invalid Login </strong>
+    <ul>
+      <% @messages.each do |message| %>
+      <li> <%= message %> </li>
+    </ul>
+      <% end %>  
+    </div>
+
+  <% end %>
+
+
 <form method="post" action="/login"> 
   
   <div> 
     <label> Email </label>
-    <input type="text" name="email" placeholder="Your Email" class="form-control" value="<%= @user && @user.email %>">
+    <input type="text" name="email" placeholder="Your Email" class="form-control" value="<%= @user && @user.email %>" required>
   </div>
 
   <div> 
     <label> Password </label>
-    <input type="password" name="password" placehholder="Your Password" class="form-control" value="<%= @user && @user.password %>">
+    <input type="password" name="password" placehholder="Your Password" class="form-control" value="<%= @user && @user.password %>" required>
     <br/>
   </div>
 

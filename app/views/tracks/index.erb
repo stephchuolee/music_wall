@@ -2,24 +2,47 @@
 
 <h1> Tracks </h1>
 
-<% @tracks.order(created_at: :desc).each do |track| %> 
+  <% if @vote && @vote.errors.any? %>
+    <div> 
+    <strong> Whoops! </strong>
+    <ul>
+      <% @vote.errors.full_messages.each do |message| %>
+      <li> <%= message %> </li>
+    </ul>
+      <% end %>  
+    </div>
+
+  <% end %>
+
+
+
+<!-- @tracks.order(created_at: :desc) -->
+
+<% @tracks.each do |track| %> 
   <div class="track"> 
     <h3> <a href="/tracks/<%= track.id %>"> <%= track.title %></a><small> <%= track.artist %> </small> </h3>
     <p> 
       <a href= <%= track.url %> > Link </a> <br/> 
       Posted At: <%= track.created_at %> <br/>
       Updated At: <%= track.updated_at %>
+      <br/>
+
+      <% if session[:email] %>
+        <%= track.votes.count%> votes 
+        <br/> 
+     
+        <form method="post" action="/upvote"> 
+           <div> 
+            <button name="track_id" value= "<%= track.id %>" type="submit"> Vote </button>
+          </div>
+        </form>
+
+      <% else %> 
+      <%= track.votes.count%> votes - Sign up or Log in to vote
+      <% end %>
+
     </p>
 
-    <% if session[:email] %>  
-      <!-- <form method="post" action="/show"> 
-        <div> 
-          <input type="submit" value="Upvote"> 
-          <input type="submit" value="Downvote">
-        </div>
-      </form> -->
-      <%= button_to '+1', upvote_topic_path(topic), method: :post %>
-    <% end %> 
 
   </div>
   

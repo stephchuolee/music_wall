@@ -6,8 +6,8 @@
   <div>
     <strong> Some issues with your submission, please fix them: </strong>
     <ul>
-      <% @track.errors.full_messages.each do |track| %> 
-      <li> <%= track %></li>
+      <% @track.errors.full_messages.each do |message| %> 
+      <li> <%= message %></li>
     <% end %>
     </ul>
   </div>
@@ -35,6 +35,6 @@
   <br/>
 
   <div> 
-    <input type="submit" value="Submit"> 
+    <button type="submit" value="Submit"> Submit </button>
   </div>
 </form>
