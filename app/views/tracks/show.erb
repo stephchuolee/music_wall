@@ -2,6 +2,21 @@
 
 <h1><%= @track.title %></h1>
 
+
+  <% if @messages %>
+    <div> 
+    <strong> Whoops! </strong>
+      <ul>
+        <% @messages.each do |message| %>
+        <li> <%= message %> </li>
+        <% end %>  
+      </ul>
+    </div>
+
+  <% end %>
+
+
+
 <p> 
   Artist: <%= @track.artist %>
 </p>
@@ -27,6 +42,63 @@
   <% end %> 
 
 <% end %> 
+
+
+<% if @user && !@user.has_reviewed?(@track.id) %> 
+  <%= @track.id %>
+  <h2> Add a Review </h2>
+
+  <form method="post" action="/add_review"> 
+     <div> 
+      <label for="title"> Title </label>
+      <br/>
+      <input id="title" type="text" name="title" placeholder="Title of Review" class="form-control" >
+      <br/>
+    </div>
+
+     <div> 
+      <label for="content"> Review </label>
+      <br/>
+      <input id="content" type="text" name="content" placeholder="Your full review" class="form-control" >
+      <br/>
+    </div>
+
+     <div> 
+      <button name="track_id" type="submit" value= "<%= @track.id %>"> Submit Review </button>
+    </div>
+
+  </form>
+
+<% end %> 
+
+
+
+<% @reviews.order(created_at: :desc).each do |review| %> 
+  <div class="review"> 
+    <h3> <%= review.title %> <small> 
+    <%= review.user_id %> </small> </h3>
+    <p> 
+      <%= review.content %>
+      <br/>
+
+      <% if @user && review.user_id == @user.id %>
+
+        <a href="/delete_review/<%= review.id %>">  <b> Delete this review </b> </a>
+        <br/>
+      <% end %>
+
+      
+      Posted At: <%= review.created_at %> 
+      <br/>
+      Updated At: <%= review.updated_at %>
+      <br/>
+    </p>
+  </div>
+<% end %> 
+
+
+
+  
 
 
 <hr/> 

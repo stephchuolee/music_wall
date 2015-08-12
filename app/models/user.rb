@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
   has_many :tracks 
   has_many :votes
+  has_many :reviews
 
   validates :email, presence: true, uniqueness: true
   validates :password, presence: true
@@ -11,7 +12,10 @@ class User < ActiveRecord::Base
   # end 
 
   
-  
+  def has_reviewed?(track_id)
+    !!reviews.find_by(track_id: track_id)
+    # self.id 
+  end 
 
 
 end 

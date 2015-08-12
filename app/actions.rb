@@ -1,12 +1,49 @@
 # Homepage (Root path)
+helpers do 
+
+  def current_user
+    # who is logged in
+    @current_user = User.find(session[:id]) if session[:id]
+  end 
+
+  def get_user(email, password) 
+    user = User.find_by(email: email)
+
+    if user && user.password == password
+      session[:email] = user.email
+      session[:id] = user.id 
+      user
+    end
+  end 
+
+  def render_track(track_id, messages = nil)
+    # the following mimics get '/tracks/:id' 
+    @track = Track.find(track_id)
+    @tracks = Track.all
+    @reviews = Review.where(track_id: track_id)
+    @user = current_user
+    @messages = messages
+    erb :'tracks/show'
+  end
+
+  def can_delete?(review_id)
+    user = current_user 
+    if user
+      !!user.reviews.find(review_id)
+    end
+  end
+
+end 
 
 configure do 
   enable :sessions
 end 
 
+
 get '/' do
   erb :index
 end
+
 
 get '/tracks' do 
   @tracks = Track.includes(:votes).group("tracks.id").order("count(votes.id) desc").references(:votes)
@@ -25,7 +62,6 @@ post '/upvote' do
   else 
     redirect '/tracks'
   end 
-
 end 
 
 get '/tracks/new' do
@@ -46,10 +82,10 @@ post '/tracks' do
   end 
 end 
 
+
+
 get '/tracks/:id' do 
-  @track = Track.find params[:id]
-  @tracks = Track.all
-  erb :'tracks/show'
+  render_track(params[:id])
 end 
 
 get '/login' do 
@@ -57,11 +93,9 @@ get '/login' do
 end 
 
 post '/login' do 
-  @user = User.find_by(email: params[:email])
-
-  if @user && @user.password == params[:password]
-    session[:email] = @user.email
-    session[:id] = @user.id 
+  @user = get_user(params[:email], params[:password])
+  
+  if !@user.nil?
     redirect '/'
   else
     @messages = ['Invalid login credentials']
@@ -71,7 +105,9 @@ post '/login' do
 end 
 
 get '/logout' do
-  session.delete(:email)
+  session.clear 
+  # alternate method:
+  # session.delete(:email)
   redirect '/'
 end 
 
@@ -87,14 +123,37 @@ post '/signup' do
   redirect '/'
 end 
 
+post '/add_review' do
+  @review = Review.new(
+    title: params[:title],
+    content: params[:content], 
+    user_id: session[:id],
+    track_id: params[:track_id] #references name 
+    )
+  if @review.save 
+    redirect "/tracks/#{params[:track_id]}" 
+  else 
+    render_track(params[:track_id], @review.errors.full_messages)
+  end 
+end 
 
-    
+get '/delete_review/:review_id' do
+  if can_delete?(params[:review_id])
+    begin
+      review = Review.find(params[:review_id])
+      review.delete
+      if review.save 
+        redirect "/tracks/#{review.track_id}"
+      else 
+        render_track(params[:review_id], review.errors.full_messages)
+      end 
+    rescue #find throws error, skips everything up until rescue
+      redirect '/tracks'
+    end
+  else
+    redirect '/tracks'
+  end
+end 
 
 
-
-  # all songs belong to a user
-  # users can only up/downvote when if there is a session running
-  # logout destroys the session
-
-
-
+ 
